@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>To-Do App</title>
+  </head>
+  <body>
+    <h1>To-Do List</h1>
+    <ul id="todo-list"></ul>
+
+    <h2>Add New To-Do</h2>
+    <form id="new-todo-form">
+      <input type="text" id="new-todo-text" required />
+      <button type="submit">Add</button>
+    </form>
+
+    <script>
+      const todoList = document.querySelector("#todo-list")
+      const newTodoForm = document.querySelector("#new-todo-form")
+      const newTodoText = document.querySelector("#new-todo-text")
+
+      function loadTodos() {
+        fetch("/v1/todos")
+          .then((response) => response.json())
+          .then((todos) => {
+            todoList.innerHTML = ""
+            todos.forEach((todo) => {
+              addTodoToList(todo)
+            })
+          })
+      }
+
+      function addTodoToList(todo) {
+        const listItem = document.createElement("li")
+        listItem.textContent = todo.task
+
+        const deleteButton = document.createElement("button")
+        deleteButton.textContent = "Delete"
+        deleteButton.addEventListener("click", () => {
+          deleteTodo(todo.id)
+        })
+        listItem.appendChild(deleteButton)
+
+        const editButton = document.createElement("button")
+        editButton.textContent = "Edit"
+        editButton.addEventListener("click", () => {
+          const newText = prompt("Edit todo:", todo.task)
+          if (newText !== null && newText !== "") {
+            updateTodo(todo.id, newText)
+          }
+        })
+        listItem.appendChild(editButton)
+
+        todoList.appendChild(listItem)
+      }
+
+      function createTodo(task) {
+        fetch("/v1/todos", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ task }),
+        })
+          .then((response) => response.json())
+          .then((newTodo) => {
+            addTodoToList(newTodo)
+            newTodoText.value = ""
+          })
+      }
+
+      function deleteTodo(id) {
+        fetch(`/v1/todos/${id}`, { method: "DELETE" }).then(() => {
+          loadTodos()
+        })
+      }
+
+      function updateTodo(id, task) {
+        fetch(`/v1/todos/${id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ task }),
+        }).then(() => {
+          loadTodos()
+        })
+      }
+
+      newTodoForm.addEventListener("submit", (event) => {
+        event.preventDefault()
+        const task = newTodoText.value
+        createTodo(task)
+      })
+
+      loadTodos()
+    </script>
+  </body>
+</html>
+
