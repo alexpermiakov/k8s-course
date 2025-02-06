@@ -62,7 +62,6 @@ func createTodo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Assign a new ID (very basic - improve in a real app)
 	newID := 1
 	if len(todos) > 0 {
 		newID = todos[len(todos)-1].ID + 1
