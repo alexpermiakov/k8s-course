@@ -30,7 +30,7 @@ func main() {
 	}
 
 	r := mux.NewRouter()
-	apiRouter := r.PathPrefix("/v1").Subrouter()
+	apiRouter := r.PathPrefix("/api/v1").Subrouter()
 
 	apiRouter.HandleFunc("/todos", getTodos).Methods("GET")
 	apiRouter.HandleFunc("/todos", createTodo).Methods("POST")

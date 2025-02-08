@@ -30,7 +30,7 @@
       const newTodoText = document.querySelector("#new-todo-text")
 
       function loadTodos() {
-        fetch("/v1/todos")
+        fetch("/api/v1/todos")
           .then((response) => response.json())
           .then((todos) => {
             todoList.innerHTML = ""
@@ -65,7 +65,7 @@
       }
 
       function createTodo(task) {
-        fetch("/v1/todos", {
+        fetch("/api/v1/todos", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ task }),
@@ -78,13 +78,13 @@
       }
 
       function deleteTodo(id) {
-        fetch(`/v1/todos/${id}`, { method: "DELETE" }).then(() => {
+        fetch(`/api/v1/todos/${id}`, { method: "DELETE" }).then(() => {
           loadTodos()
         })
       }
 
       function updateTodo(id, task) {
-        fetch(`/v1/todos/${id}`, {
+        fetch(`/api/v1/todos/${id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ task }),
